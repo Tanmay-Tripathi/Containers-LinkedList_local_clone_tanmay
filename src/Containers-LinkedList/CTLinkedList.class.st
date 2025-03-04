@@ -185,13 +185,36 @@ CTLinkedList >> addLast: aLinkOrObject [
 
 { #category : #append }
 CTLinkedList >> append: aCollection [
-	aCollection isNil ifTrue: [ ^ self].
-	aCollection isEmpty ifTrue: [ ^ self].
-	self isEmpty
-		ifTrue: [ self add: aCollection firstLink. ^ self ].
-	
-	self lastLink nextLink: aCollection firstLink
+    "Appends aCollection to the current list. Handles self-appending, 
+    size updates, and resets appended list."
+
+    "Return if aCollection is nil or empty."
+    aCollection isNil ifTrue: [ ^ self ].
+    aCollection isEmpty ifTrue: [ ^ self ].
+    
+    "Prevent self-appending to avoid infinite loops."
+    aCollection == self ifTrue: [ ^ self error: 'Cannot append list to itself' ].
+
+    self isEmpty
+        ifTrue: [ 
+            "Adopt aCollection's links if current list is empty."
+            firstLink := aCollection firstLink.
+            lastLink := aCollection lastLink.
+        ]
+        ifFalse: [ 
+            "Attach aCollection to the last node and update lastLink."
+            lastLink nextLink: aCollection firstLink.
+            lastLink := aCollection lastLink.
+        ].
+
+    "Update size if applicable."
+    size ifNotNil: [ size := size + aCollection size ].
+
+    "Clear appended list to prevent link sharing (optional)."
+    aCollection removeAll.
 ]
+
+
 
 { #category : #accessing }
 CTLinkedList >> at: index [
