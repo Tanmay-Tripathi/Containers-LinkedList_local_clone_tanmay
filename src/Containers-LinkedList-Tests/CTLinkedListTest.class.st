@@ -845,6 +845,42 @@ CTLinkedListTest >> testAppendTwoLinkedLists [
 	self assert: l1 fourth equals: $D.
 ]
 
+{ #category : #'tests - append' }
+CTLinkedListTest >> testSelfAppendPrevention [
+    | list |
+
+    list := CTLinkedList new.
+    list add: $X.
+    list addLast: $Y.
+
+    "Ensure self-appending raises an error."
+    self should: [ list append: list ] raise: Error.
+]
+
+{ #category : #'tests - append' }
+CTLinkedListTest >> testAppendDifferentSizedLists [
+    | shortList longList |
+
+    shortList := CTLinkedList new.
+    shortList add: $1.
+
+    longList := CTLinkedList new.
+    longList add: $A.
+    longList addLast: $B.
+    longList addLast: $C.
+    longList addLast: $D.
+
+    shortList append: longList.
+
+    "Ensure all elements are correctly linked"
+    self assert: shortList size equals: 5.
+    self assert: shortList first equals: $1.
+    self assert: shortList second equals: $A.
+    self assert: shortList last equals: $D.
+]
+
+
+
 { #category : #'tests - sequenceable' }
 CTLinkedListTest >> testAtPut [
 	| ll |

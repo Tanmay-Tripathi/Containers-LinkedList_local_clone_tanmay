@@ -184,34 +184,31 @@ CTLinkedList >> addLast: aLinkOrObject [
 ]
 
 { #category : #append }
-CTLinkedList >> append: aCollection [
-    "Appends aCollection to the current list. Handles self-appending, 
-    size updates, and resets appended list."
+CTLinkedList >> append: aLinkedList [
+    "Appends a copy of aLinkedList, preventing self-appending."
 
-    "Return if aCollection is nil or empty."
-    aCollection isNil ifTrue: [ ^ self ].
-    aCollection isEmpty ifTrue: [ ^ self ].
-    
-    "Prevent self-appending to avoid infinite loops."
-    aCollection == self ifTrue: [ ^ self error: 'Cannot append list to itself' ].
+    "Return if aLinkedList is nil or empty."
+    aLinkedList isNil ifTrue: [ ^ self ].
+    aLinkedList isEmpty ifTrue: [ ^ self ].
+
+    "Prevent self-appending."
+    aLinkedList == self ifTrue: [ ^ self error: 'Cannot append list to itself' ].
+
+    "Copy to avoid modifying the original."
+    | copiedList |
+    copiedList := aLinkedList copy.
 
     self isEmpty
         ifTrue: [ 
-            "Adopt aCollection's links if current list is empty."
-            firstLink := aCollection firstLink.
-            lastLink := aCollection lastLink.
+            "Adopt copiedList if self is empty."
+            firstLink := copiedList firstLink.
+            lastLink := copiedList lastLink.
         ]
         ifFalse: [ 
-            "Attach aCollection to the last node and update lastLink."
-            lastLink nextLink: aCollection firstLink.
-            lastLink := aCollection lastLink.
+            "Attach copiedList and update lastLink."
+            lastLink nextLink: copiedList firstLink.
+            lastLink := copiedList lastLink.
         ].
-
-    "Update size if applicable."
-    size ifNotNil: [ size := size + aCollection size ].
-
-    "Clear appended list to prevent link sharing (optional)."
-    aCollection removeAll.
 ]
 
 
