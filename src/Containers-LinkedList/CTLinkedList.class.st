@@ -185,29 +185,25 @@ CTLinkedList >> addLast: aLinkOrObject [
 
 { #category : #append }
 CTLinkedList >> append: aLinkedList [
-    "Appends a copy of aLinkedList, preventing self-appending."
+    "Appends elements of aLinkedList, allowing self-appending ie. duplicating elements."
 
     "Return if aLinkedList is nil or empty."
     aLinkedList isNil ifTrue: [ ^ self ].
     aLinkedList isEmpty ifTrue: [ ^ self ].
 
-    "Prevent self-appending."
-    aLinkedList == self ifTrue: [ ^ self error: 'Cannot append list to itself' ].
-
-    "Copy to avoid modifying the original."
-    | copiedList |
-    copiedList := aLinkedList copy.
+    "If appending to itself, duplicate elements."
+    aLinkedList == self ifTrue: [ aLinkedList := aLinkedList collect: [ :each | each ] ].
 
     self isEmpty
         ifTrue: [ 
-            "Adopt copiedList if self is empty."
-            firstLink := copiedList firstLink.
-            lastLink := copiedList lastLink.
+            "Adopt aLinkedList if self is empty."
+            firstLink := aLinkedList firstLink.
+            lastLink := aLinkedList lastLink.
         ]
         ifFalse: [ 
-            "Attach copiedList and update lastLink."
-            lastLink nextLink: copiedList firstLink.
-            lastLink := copiedList lastLink.
+            "Attach aLinkedList and update lastLink."
+            lastLink nextLink: aLinkedList firstLink.
+            lastLink := aLinkedList lastLink.
         ].
 ]
 
