@@ -797,64 +797,70 @@ CTLinkedListTest >> testAddAfterLast2 [
 { #category : #'tests - append' }
 CTLinkedListTest >> testAppendAFullOneAndAnEmptyList [
 
-	| l1 l2 |
-	l1 := CTLinkedList new.  
-	l1 add: $A.
-	l1 addLast: $B.
-	
-	l2 := CTLinkedList new.	
+    | l1 l2 |
+    l1 := CTLinkedList new.  
+    l1 add: $A.
+    l1 addLast: $B.
 
-	l1 append: l2.
-	self assert: l1 size equals: 2.
-	self assert: l1 first equals: $A.
-	self assert: l1 second equals: $B.
+    l2 := CTLinkedList new.  
+
+    l1 append: l2.
+    self assert: l1 size equals: 2.
+    self assert: l1 first equals: $A.
+    self assert: l1 second equals: $B.
 ]
 
 { #category : #'tests - append' }
 CTLinkedListTest >> testAppendAnEmptyListAndAFullOne [
 
-	| l1 l2 |
-	l1 := CTLinkedList new.
+    | l1 l2 |
+    l1 := CTLinkedList new.
 
-	l2 := CTLinkedList new.  
-	l2 add: $C.
-	l2 addLast: $D.
+    l2 := CTLinkedList new.  
+    l2 add: $C.
+    l2 addLast: $D.
 
-	l1 append: l2.
-	self assert: l1 size equals: 2.
-	self assert: l1 first equals: $C.
-	self assert: l1 second equals: $D.
+    l1 append: l2.
+    self assert: l1 size equals: 2.
+    self assert: l1 first equals: $C.
+    self assert: l1 second equals: $D.
 ]
 
 { #category : #'tests - append' }
 CTLinkedListTest >> testAppendTwoLinkedLists [
 
-	| l1 l2 |
-	l1 := CTLinkedList new.
-	l1 add: $A.
-	l1 addLast: $B.
-	
-	l2 := CTLinkedList new.  
-	l2 add: $C.
-	l2 addLast: $D.
+    | l1 l2 |
+    l1 := CTLinkedList new.
+    l1 add: $A.
+    l1 addLast: $B.
 
-	l1 append: l2.
-	self assert: l1 size equals: 4.
-	self assert: l1 first equals: $A.
-	self assert: l1 third equals: $C.
-	self assert: l1 fourth equals: $D.
+    l2 := CTLinkedList new.  
+    l2 add: $C.
+    l2 addLast: $D.
+
+    l1 append: l2.
+    self assert: l1 size equals: 4.
+    self assert: l1 first equals: $A.
+    self assert: l1 third equals: $C.
+    self assert: l1 fourth equals: $D.
 ]
 
 { #category : #'tests - append' }
-CTLinkedListTest >> testSelfAppendPrevention [
+CTLinkedListTest >> testSelfAppendingDuplicatesElements [
     | list |
 
     list := CTLinkedList new.
     list add: $X.
     list addLast: $Y.
 
-    "Ensure self-appending raises an error."
-    self should: [ list append: list ] raise: Error.
+    "Self-append should duplicate elements."
+    list append: list.
+
+    self assert: list size equals: 4.
+    self assert: list first equals: $X.
+    self assert: list second equals: $Y.
+    self assert: list third equals: $X.
+    self assert: list fourth equals: $Y.
 ]
 
 { #category : #'tests - append' }
